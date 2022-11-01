@@ -5,12 +5,7 @@ import Grid from '@mui/material/Grid';
 import HomeIcon from '@mui/icons-material/Home';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 
-import {
-  StyledDrawer,
-  StyledMenuText,
-  StyledAppBar,
-  StyledBoxIcon,
-} from './styles';
+import { StyledDrawer, StyledMenuText, StyledBoxIcon } from './styles';
 
 interface Props {
   children: React.ReactNode;
@@ -82,6 +77,7 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
         </div>
         <Grid
           container
+          spacing={3}
           sx={{
             paddingLeft: '24px',
             width: { sm: `calc(100% - ${drawerWidth - 30}px)` },

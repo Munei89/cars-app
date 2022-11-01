@@ -3,16 +3,43 @@ import { Helmet } from 'react-helmet-async';
 import DefaultLayout from 'app/layouts/DefaultLayout';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
+import Dialog from '@mui/material/Dialog';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, reducer, sliceKey } from './slice';
 import { homePageSaga } from './saga';
 import { selectHomePage } from './selectors';
+import moment from 'moment';
 
 import StyledCard from 'app/components/StyledCard';
+import StyledButton from 'app/components/StyledButton';
 
 export function HomePage() {
   const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
+  const [selectedCar, setSelectedCar] = React.useState({
+    id: 0,
+    car: '',
+    car_model: '',
+    car_color: '',
+    car_model_year: 0,
+    car_vin: '',
+    price: '',
+    availability: false,
+  });
+
+  const [values, setValues] = React.useState({
+    start_date: moment().format('YYYY-MM-DD'),
+    end_date: moment().format('YYYY-MM-DD'),
+  });
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const minDate = new Date(Date.now());
 
   const cars = [
     {
@@ -184,8 +211,31 @@ export function HomePage() {
 
   React.useEffect(() => {
     dispatch(actions.getCars());
+    dispatch(actions.getBookings());
   }, [dispatch]);
 
+  const isUpcoming = date => {
+    const today = new Date();
+    const bookingDate = new Date(date);
+    return bookingDate > today;
+  };
+
+  const handleBook = carId => {
+    const carDetail = cars.find(car => car.id === carId);
+
+    const booking = {
+      ...carDetail,
+      start_date: moment(values.start_date).format('YYYY-MM-DD'),
+      end_date: moment(values.end_date).format('YYYY-MM-DD'),
+      updated_at: moment().format('YYYY-MM-DD'),
+      created_at: moment().format('YYYY-MM-DD'),
+    };
+    dispatch(actions.bookCarSuccess(booking));
+    console.log(booking, 'booking');
+  };
+  const handleChange = event => {
+    console.log('newValue', event);
+  };
   return (
     <DefaultLayout>
       <Helmet>
@@ -205,11 +255,156 @@ export function HomePage() {
                   </p>
 
                   <Chip label={car.availability ? 'Available' : 'Booked'} />
+                  <StyledButton
+                    variant="contained"
+                    color="primary"
+                    disabled={!car.availability}
+                    onClick={() => {
+                      // dispatch(actions.bookCar(car.id));
+                      setSelectedCar(car);
+                      setOpen(true);
+                    }}
+                  >
+                    Book
+                  </StyledButton>
                 </StyledCard>
               </Grid>
             ))}
         </Grid>
       </Grid>
+      <Grid item xs={4}>
+        <h1>Bookings</h1>
+        {homePageState.bookings.data.length > 0 &&
+          homePageState.bookings.data.map(booking => (
+            <div>
+              <p>
+                {booking.car} - {booking.car_model} - {booking.car_model_year} -{' '}
+                {booking.car_color}
+              </p>
+              <p>From: {booking.start_date}</p>
+              <p>To: {booking.end_date}</p>
+              <p>{booking.price}</p>
+              <p>{isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}</p>
+            </div>
+          ))}
+      </Grid>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          noValidate
+          autoComplete="off"
+          component="form"
+          sx={{
+            p: 2,
+          }}
+        >
+          <h3>Selected car for booking: {selectedCar.car}</h3>
+          <TextField
+            id="outlined-basic"
+            label="Car"
+            variant="outlined"
+            sx={{
+              width: '100%',
+              margin: '10px 0',
+            }}
+            name="car"
+            defaultValue={selectedCar.car}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Car Model"
+            variant="outlined"
+            sx={{
+              width: '100%',
+              margin: '10px 0',
+            }}
+            name="car_model"
+            defaultValue={selectedCar.car_model}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Model Year"
+            variant="outlined"
+            sx={{
+              width: '100%',
+              margin: '10px 0',
+            }}
+            name="car_model_year"
+            defaultValue={selectedCar.car_model_year}
+          />
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DesktopDatePicker
+              label="Date"
+              inputFormat="MM/DD/YYYY"
+              value={values.start_date}
+              onChange={e =>
+                setValues({
+                  ...values,
+                  start_date: moment(e).format('MM-DD-YYYY'),
+                })
+              }
+              disablePast={true}
+              renderInput={params => (
+                <TextField
+                  sx={{
+                    width: '100%',
+                    margin: '10px 0',
+                  }}
+                  {...params}
+                />
+              )}
+            />
+            <DesktopDatePicker
+              label="End Date"
+              inputFormat="MM/DD/YYYY"
+              value={values.end_date}
+              onChange={e =>
+                setValues({
+                  ...values,
+                  end_date: moment(e).format('MM-DD-YYYY'),
+                })
+              }
+              disablePast={true}
+              renderInput={params => (
+                <TextField
+                  sx={{
+                    width: '100%',
+                    margin: '10px 0',
+                  }}
+                  {...params}
+                />
+              )}
+            />
+          </LocalizationProvider>
+          <StyledButton
+            variant="contained"
+            color="primary"
+            onClick={() => handleBook(selectedCar.id)}
+          >
+            Book
+          </StyledButton>
+          <StyledButton
+            variant="contained"
+            color="primary"
+            sx={{
+              margin: '10px',
+            }}
+            onClick={() => {
+              setOpen(false);
+              setValues({
+                start_date: '',
+                end_date: '',
+              });
+            }}
+          >
+            Cancel
+          </StyledButton>
+        </Box>
+      </Dialog>
     </DefaultLayout>
   );
 }
