@@ -1,11 +1,16 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
-import { HomePageState, ICar } from './types';
+import { HomePageState, ICar, IBooking } from './types';
 
 export const initialState: HomePageState = {
   cars: [],
   loading: false,
   error: false,
+  bookings: {
+    loading: false,
+    error: false,
+    data: [],
+  },
 };
 
 const homePageSlice = createSlice({
@@ -24,6 +29,26 @@ const homePageSlice = createSlice({
     getCarsError(state) {
       state.loading = false;
       state.error = true;
+    },
+    getBookings(state) {
+      state.bookings.loading = true;
+      state.bookings.error = false;
+    },
+    getBookingsSuccess(state, action: PayloadAction<IBooking[]>) {
+      state.bookings.data = action.payload;
+      state.bookings.loading = false;
+    },
+    getBookingsError(state) {
+      state.bookings.loading = false;
+      state.bookings.error = true;
+    },
+    bookCar(state) {
+      state.bookings.loading = true;
+      state.bookings.error = false;
+    },
+    bookCarSuccess(state, action: PayloadAction<any>) {
+      state.bookings.data = [...state.bookings.data, action.payload];
+      state.bookings.loading = false;
     },
   },
 });

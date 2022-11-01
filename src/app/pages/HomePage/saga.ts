@@ -1,6 +1,7 @@
 import Endpoints from 'config/endpoints';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import { carBookings } from 'utils/constants';
 import { actions } from './slice';
 
 export function* getCars() {
@@ -13,6 +14,15 @@ export function* getCars() {
   }
 }
 
+export function* getBookings() {
+  try {
+    yield put(actions.getBookingsSuccess(carBookings));
+  } catch (err) {
+    yield put(actions.getBookingsError());
+  }
+}
+
 export function* homePageSaga() {
   yield takeLatest(actions.getCars.type, getCars);
+  yield takeLatest(actions.getBookings.type, getBookings);
 }
