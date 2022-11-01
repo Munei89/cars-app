@@ -15,6 +15,11 @@ import { actions, reducer, sliceKey } from './slice';
 import { homePageSaga } from './saga';
 import { selectHomePage } from './selectors';
 import moment from 'moment';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import NoCrashIcon from '@mui/icons-material/NoCrash';
 
 import StyledCard from 'app/components/StyledCard';
 import StyledButton from 'app/components/StyledButton';
@@ -37,9 +42,7 @@ export function HomePage() {
     start_date: moment().format('YYYY-MM-DD'),
     end_date: moment().format('YYYY-MM-DD'),
   });
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const minDate = new Date(Date.now());
 
   const cars = [
     {
@@ -233,9 +236,7 @@ export function HomePage() {
     dispatch(actions.bookCarSuccess(booking));
     console.log(booking, 'booking');
   };
-  const handleChange = event => {
-    console.log('newValue', event);
-  };
+
   return (
     <DefaultLayout>
       <Helmet>
@@ -249,18 +250,19 @@ export function HomePage() {
             cars.map(car => (
               <Grid item xs={4}>
                 <StyledCard key={car.id}>
+                  <i className={`car-${car.car.toLocaleLowerCase()}`}></i>
+                  <Chip label={car.availability ? 'Available' : 'Booked'} />
+
                   <h1>{car.car}</h1>
                   <p>
                     {car.car_model} - {car.car_model_year} - {car.car_color}
                   </p>
 
-                  <Chip label={car.availability ? 'Available' : 'Booked'} />
                   <StyledButton
                     variant="contained"
                     color="primary"
                     disabled={!car.availability}
                     onClick={() => {
-                      // dispatch(actions.bookCar(car.id));
                       setSelectedCar(car);
                       setOpen(true);
                     }}
@@ -274,19 +276,23 @@ export function HomePage() {
       </Grid>
       <Grid item xs={4}>
         <h1>Bookings</h1>
-        {homePageState.bookings.data.length > 0 &&
-          homePageState.bookings.data.map(booking => (
-            <div>
-              <p>
-                {booking.car} - {booking.car_model} - {booking.car_model_year} -{' '}
-                {booking.car_color}
-              </p>
-              <p>From: {booking.start_date}</p>
-              <p>To: {booking.end_date}</p>
-              <p>{booking.price}</p>
-              <p>{isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}</p>
-            </div>
-          ))}
+        <List>
+          {homePageState.bookings.data.length > 0 &&
+            homePageState.bookings.data.map(booking => (
+              <ListItem disabled={!isUpcoming(booking.start_date)}>
+                <ListItemIcon>
+                  <NoCrashIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`${booking.car} - ${booking.car_model} - ${booking.car_model_year} - ${booking.car_color}`}
+                  secondary={`${booking.start_date} - ${booking.end_date}`}
+                />
+                <Chip
+                  label={isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}
+                />
+              </ListItem>
+            ))}
+        </List>
       </Grid>
       <Dialog
         open={open}

@@ -3742,6 +3742,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001400, caniuse-lite@^1.0.30001426:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001429.tgz#70cdae959096756a85713b36dd9cb82e62325639"
   integrity sha512-511ThLu1hF+5RRRt0zYCf2U2yRr9GPF6m5y90SBCWsvSoYoW7yAGlv/elyPaNfvGCkp6kj/KFZWU0BMA69Prsg==
 
+car-makes-icons@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/car-makes-icons/-/car-makes-icons-1.0.0.tgz#71274c024c35d33c344da945a0add6c4febb6790"
+  integrity sha512-7XKxOFyL7ZbZA+KtwunL3YLuORfQ1DCddee+CQzqjBa7RkJ8EITUNI6BtyviNOlpnU+0uJm45jxGDlCUagIrRw==
+
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
