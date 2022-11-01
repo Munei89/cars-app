@@ -23,7 +23,7 @@ const drawerWidth = 280;
 
 const DefaultLayout = ({ children, drawerOpen }: Props) => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <StyledDrawer
         variant="permanent"
         open={true}
@@ -70,23 +70,25 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
           </Grid>
         </Box>
       </StyledDrawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
-        <StyledAppBar
-          position="static"
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          overflow: 'auto',
+        }}
+      >
+        <div>
+          <Box>Home</Box>
+        </div>
+        <Grid
+          container
           sx={{
-            width: { sm: `calc(100% - ${drawerWidth - 20}px)` },
-            ml: { sm: `${drawerWidth - 20}px` },
-            backgroundColor: '#fff',
-            color: '#000000',
-            boxShadow: 'none',
-            marginTop: '0',
-            textAlign: 'center',
-            padding: '0',
+            paddingLeft: '24px',
+            width: { sm: `calc(100% - ${drawerWidth - 30}px)` },
           }}
         >
-          <Box>Home</Box>
-        </StyledAppBar>
-        <Grid container>{children}</Grid>
+          {children}
+        </Grid>
       </Box>
     </Box>
   );
