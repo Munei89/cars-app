@@ -11,7 +11,7 @@ export const StyledDrawer = styled(Drawer)<{ open: boolean; $islg?: boolean }>`
     transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     width: ${({ open }) => (open ? '280px' : '0')};
     visibility: ${({ open }) => (open ? 'visible' : 'hidden')};
-    position: ${({ $islg }) => ($islg ? 'relative' : 'fixed')};
+    position: 'relative';
   }
 
   .MuiDrawer-paper {
