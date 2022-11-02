@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Popover from '@mui/material/Popover';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,6 +21,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import NoCrashIcon from '@mui/icons-material/NoCrash';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { cars } from 'utils/constants';
 
 import StyledCard from 'app/components/StyledCard';
 import StyledButton from 'app/components/StyledButton';
@@ -27,6 +30,7 @@ import StyledButton from 'app/components/StyledButton';
 export function HomePage() {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedCar, setSelectedCar] = React.useState({
     id: 0,
     car: '',
@@ -42,170 +46,24 @@ export function HomePage() {
     start_date: moment().format('YYYY-MM-DD'),
     end_date: moment().format('YYYY-MM-DD'),
   });
+
+  const [filters, setFilters] = React.useState<any>({
+    fromDate: moment().format('YYYY-MM-DD'),
+    toDate: moment().format('YYYY-MM-DD'),
+  });
   const handleClose = () => setOpen(false);
 
-  const cars = [
-    {
-      id: 1,
-      car: 'Mitsubishi',
-      car_model: 'Montero',
-      car_color: 'Yellow',
-      car_model_year: 2002,
-      car_vin: 'SAJWJ0FF3F8321657',
-      price: '$2814.46',
-      availability: false,
-    },
-    {
-      id: 2,
-      car: 'Volkswagen',
-      car_model: 'Passat',
-      car_color: 'Maroon',
-      car_model_year: 2008,
-      car_vin: 'WBANV9C51AC203320',
-      price: '$1731.98',
-      availability: false,
-    },
-    {
-      id: 3,
-      car: 'Saturn',
-      car_model: 'L-Series',
-      car_color: 'Red',
-      car_model_year: 2003,
-      car_vin: '1HGCR6F34EA246317',
-      price: '$2238.35',
-      availability: true,
-    },
-    {
-      id: 4,
-      car: 'Jeep',
-      car_model: 'Compass',
-      car_color: 'Violet',
-      car_model_year: 2012,
-      car_vin: '4USBT33454L511606',
-      price: '$2732.99',
-      availability: false,
-    },
-    {
-      id: 5,
-      car: 'Mitsubishi',
-      car_model: 'Lancer Evolution',
-      car_color: 'Purple',
-      car_model_year: 2002,
-      car_vin: 'WAU2GBFCXDN339713',
-      price: '$3849.47',
-      availability: false,
-    },
-    {
-      id: 6,
-      car: 'Chevrolet',
-      car_model: 'Suburban',
-      car_color: 'Indigo',
-      car_model_year: 2009,
-      car_vin: 'WAUSH98E96A592763',
-      price: '$1252.30',
-      availability: false,
-    },
-    {
-      id: 7,
-      car: 'Dodge',
-      car_model: 'Ram Van B350',
-      car_color: 'Yellow',
-      car_model_year: 1994,
-      car_vin: 'KNADH4A37A6919967',
-      price: '$1762.42',
-      availability: true,
-    },
-    {
-      id: 8,
-      car: 'Isuzu',
-      car_model: 'Ascender',
-      car_color: 'Teal',
-      car_model_year: 2004,
-      car_vin: '5GTMNGEE8A8713093',
-      price: '$1081.40',
-      availability: true,
-    },
-    {
-      id: 9,
-      car: 'BMW',
-      car_model: '6 Series',
-      car_color: 'Purple',
-      car_model_year: 2008,
-      car_vin: '5TDBY5G16DS675822',
-      price: '$1258.99',
-      availability: true,
-    },
-    {
-      id: 10,
-      car: 'Mitsubishi',
-      car_model: 'GTO',
-      car_color: 'Purple',
-      car_model_year: 1994,
-      car_vin: 'JM1NC2PFXE0140518',
-      price: '$3822.92',
-      availability: false,
-    },
-    {
-      id: 11,
-      car: 'Mazda',
-      car_model: 'Mazda5',
-      car_color: 'Red',
-      car_model_year: 2010,
-      car_vin: 'WAUNE78P18A342660',
-      price: '$3963.20',
-      availability: true,
-    },
-    {
-      id: 12,
-      car: 'Audi',
-      car_model: 'Q7',
-      car_color: 'Pink',
-      car_model_year: 2012,
-      car_vin: 'WA1WYBFE2AD448505',
-      price: '$1144.27',
-      availability: true,
-    },
-    {
-      id: 13,
-      car: 'Mercedes-Benz',
-      car_model: 'SL-Class',
-      car_color: 'Aquamarine',
-      car_model_year: 1989,
-      car_vin: '4A4AP3AU8FE713946',
-      price: '$1386.49',
-      availability: true,
-    },
-    {
-      id: 14,
-      car: 'Volvo',
-      car_model: 'C70',
-      car_color: 'Red',
-      car_model_year: 2012,
-      car_vin: 'WAUHGBFC9DN768366',
-      price: '$1366.96',
-      availability: true,
-    },
-    {
-      id: 15,
-      car: 'GMC',
-      car_model: 'Envoy XL',
-      car_color: 'Green',
-      car_model_year: 2006,
-      car_vin: 'WA1AV74L67D649365',
-      price: '$1221.46',
-      availability: false,
-    },
-    {
-      id: 16,
-      car: 'GMC',
-      car_model: 'Vandura G3500',
-      car_color: 'Teal',
-      car_model_year: 1996,
-      car_vin: '1FMJK2A5XAE576485',
-      price: '$1877.63',
-      availability: true,
-    },
-  ];
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+    console.log(event.currentTarget, 'target');
+  };
+
+  const handlePopOverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const popoverOpen = Boolean(anchorEl);
+  const id = popoverOpen ? 'simple-popover' : undefined;
 
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homePageSaga });
@@ -234,7 +92,27 @@ export function HomePage() {
       created_at: moment().format('YYYY-MM-DD'),
     };
     dispatch(actions.bookCarSuccess(booking));
-    console.log(booking, 'booking');
+  };
+
+  const handleFilter = () => {
+    dispatch(
+      actions.getBookingsSuccess(
+        homePageState.bookings.data.filter(obj => {
+          return (
+            new Date(obj.created_at.substring(0, 19)).getTime() >=
+              new Date(filters.fromDate).getTime() &&
+            new Date(obj.created_at.substring(0, 19)).getTime() <=
+              new Date(filters.toDate).getTime()
+          );
+        }),
+      ),
+    );
+    setAnchorEl(null);
+  };
+
+  const handleCancelFilter = () => {
+    dispatch(actions.getBookings());
+    setAnchorEl(null);
   };
 
   return (
@@ -248,8 +126,8 @@ export function HomePage() {
         <Grid container spacing={2}>
           {cars.length > 0 &&
             cars.map(car => (
-              <Grid item xs={4}>
-                <StyledCard key={car.id}>
+              <Grid item xs={4} key={car.id}>
+                <StyledCard>
                   <i className={`car-${car.car.toLocaleLowerCase()}`}></i>
                   <Chip label={car.availability ? 'Available' : 'Booked'} />
 
@@ -275,11 +153,98 @@ export function HomePage() {
         </Grid>
       </Grid>
       <Grid item xs={4}>
-        <h1>Bookings</h1>
+        <h1>
+          Bookings{' '}
+          <FilterListIcon onClick={handleClick} aria-describedby={id} />
+        </h1>
+        <Popover
+          id={id}
+          open={popoverOpen}
+          anchorEl={anchorEl}
+          onClose={handlePopOverClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          sx={{
+            '& .MuiPopover-paper': {
+              p: 2,
+            },
+          }}
+        >
+          <h3>Filter bookings by date </h3>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DesktopDatePicker
+              label="Filter start Date"
+              inputFormat="MM/DD/YYYY"
+              value={filters.fromDate}
+              onChange={e =>
+                setFilters({
+                  ...filters,
+                  fromDate: moment(e).format('MM-DD-YYYY'),
+                })
+              }
+              renderInput={params => (
+                <TextField
+                  sx={{
+                    width: '100%',
+                    margin: '10px 0',
+                  }}
+                  {...params}
+                />
+              )}
+            />
+            <DesktopDatePicker
+              label="Filter end Date"
+              inputFormat="MM/DD/YYYY"
+              value={filters.toDate}
+              onChange={e =>
+                setFilters({
+                  ...filters,
+                  toDate: moment(e).format('MM-DD-YYYY'),
+                })
+              }
+              renderInput={params => (
+                <TextField
+                  sx={{
+                    width: '100%',
+                    margin: '10px 0',
+                  }}
+                  {...params}
+                />
+              )}
+            />
+            <StyledButton
+              variant="contained"
+              color="primary"
+              onClick={handleFilter}
+              sx={{
+                width: '100%',
+                margin: '10px 0',
+              }}
+            >
+              Filter
+            </StyledButton>
+            <StyledButton
+              variant="contained"
+              color="primary"
+              onClick={handleCancelFilter}
+              sx={{
+                width: '100%',
+                margin: '10px 0',
+              }}
+            >
+              Cancel
+            </StyledButton>
+          </LocalizationProvider>
+        </Popover>
         <List>
           {homePageState.bookings.data.length > 0 &&
             homePageState.bookings.data.map(booking => (
-              <ListItem disabled={!isUpcoming(booking.start_date)}>
+              <ListItem
+                disabled={!isUpcoming(booking.start_date)}
+                key={booking.id}
+              >
                 <ListItemIcon>
                   <NoCrashIcon />
                 </ListItemIcon>
