@@ -50,6 +50,10 @@ const homePageSlice = createSlice({
       state.bookings.data = [...state.bookings.data, action.payload];
       state.bookings.loading = false;
     },
+    showAvailableCars(state) {
+      const availableCars = state.cars.filter(car => car.availability);
+      state.cars = availableCars;
+    },
   },
 });
 

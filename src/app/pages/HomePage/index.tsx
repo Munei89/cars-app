@@ -1,12 +1,9 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet-async';
 import DefaultLayout from 'app/layouts/DefaultLayout';
 import Grid from '@mui/material/Grid';
-import Chip from '@mui/material/Chip';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Popover from '@mui/material/Popover';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -15,22 +12,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions, reducer, sliceKey } from './slice';
 import { homePageSaga } from './saga';
 import { selectHomePage } from './selectors';
+import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import NoCrashIcon from '@mui/icons-material/NoCrash';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { cars } from 'utils/constants';
 
-import StyledCard from 'app/components/StyledCard';
 import StyledButton from 'app/components/StyledButton';
+
+import CarListing from './components/CarListing';
+import Bookings from './components/Bookings';
 
 export function HomePage() {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedCar, setSelectedCar] = React.useState({
     id: 0,
     car: '',
@@ -47,23 +39,7 @@ export function HomePage() {
     end_date: moment().format('YYYY-MM-DD'),
   });
 
-  const [filters, setFilters] = React.useState<any>({
-    fromDate: moment().format('YYYY-MM-DD'),
-    toDate: moment().format('YYYY-MM-DD'),
-  });
   const handleClose = () => setOpen(false);
-
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-    console.log(event.currentTarget, 'target');
-  };
-
-  const handlePopOverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const popoverOpen = Boolean(anchorEl);
-  const id = popoverOpen ? 'simple-popover' : undefined;
 
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homePageSaga });
@@ -75,14 +51,13 @@ export function HomePage() {
     dispatch(actions.getBookings());
   }, [dispatch]);
 
-  const isUpcoming = date => {
-    const today = new Date();
-    const bookingDate = new Date(date);
-    return bookingDate > today;
+  const handleBookCar = car => {
+    setSelectedCar(car);
+    setOpen(true);
   };
 
   const handleBook = carId => {
-    const carDetail = cars.find(car => car.id === carId);
+    const carDetail = homePageState.cars.find(car => car.id === carId);
 
     const booking = {
       ...carDetail,
@@ -92,9 +67,10 @@ export function HomePage() {
       created_at: moment().format('YYYY-MM-DD'),
     };
     dispatch(actions.bookCarSuccess(booking));
+    setOpen(false);
   };
 
-  const handleFilter = () => {
+  const handleFilter = filters => {
     dispatch(
       actions.getBookingsSuccess(
         homePageState.bookings.data.filter(obj => {
@@ -107,157 +83,27 @@ export function HomePage() {
         }),
       ),
     );
-    setAnchorEl(null);
   };
 
   const handleCancelFilter = () => {
     dispatch(actions.getBookings());
-    setAnchorEl(null);
   };
 
   return (
     <DefaultLayout>
-      <Helmet>
-        <title>HomePage</title>
-        <meta name="description" content="A Boilerplate application homepage" />
-      </Helmet>
-      {homePageState.loading && <div>Loading...</div>}
-      <Grid item xs={8}>
-        <Grid container spacing={2}>
-          {cars.length > 0 &&
-            cars.map(car => (
-              <Grid item xs={4} key={car.id}>
-                <StyledCard>
-                  <i className={`car-${car.car.toLocaleLowerCase()}`}></i>
-                  <Chip label={car.availability ? 'Available' : 'Booked'} />
-
-                  <h1>{car.car}</h1>
-                  <p>
-                    {car.car_model} - {car.car_model_year} - {car.car_color}
-                  </p>
-
-                  <StyledButton
-                    variant="contained"
-                    color="primary"
-                    disabled={!car.availability}
-                    onClick={() => {
-                      setSelectedCar(car);
-                      setOpen(true);
-                    }}
-                  >
-                    Book
-                  </StyledButton>
-                </StyledCard>
-              </Grid>
-            ))}
-        </Grid>
+      <Grid item xs={12} md={8} lg={8} role="grid">
+        {homePageState.loading ? (
+          <CircularProgress />
+        ) : (
+          <CarListing cars={homePageState.cars} handleBookCar={handleBookCar} />
+        )}
       </Grid>
-      <Grid item xs={4}>
-        <h1>
-          Bookings{' '}
-          <FilterListIcon onClick={handleClick} aria-describedby={id} />
-        </h1>
-        <Popover
-          id={id}
-          open={popoverOpen}
-          anchorEl={anchorEl}
-          onClose={handlePopOverClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          sx={{
-            '& .MuiPopover-paper': {
-              p: 2,
-            },
-          }}
-        >
-          <h3>Filter bookings by date </h3>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DesktopDatePicker
-              label="Filter start Date"
-              inputFormat="MM/DD/YYYY"
-              value={filters.fromDate}
-              onChange={e =>
-                setFilters({
-                  ...filters,
-                  fromDate: moment(e).format('MM-DD-YYYY'),
-                })
-              }
-              renderInput={params => (
-                <TextField
-                  sx={{
-                    width: '100%',
-                    margin: '10px 0',
-                  }}
-                  {...params}
-                />
-              )}
-            />
-            <DesktopDatePicker
-              label="Filter end Date"
-              inputFormat="MM/DD/YYYY"
-              value={filters.toDate}
-              onChange={e =>
-                setFilters({
-                  ...filters,
-                  toDate: moment(e).format('MM-DD-YYYY'),
-                })
-              }
-              renderInput={params => (
-                <TextField
-                  sx={{
-                    width: '100%',
-                    margin: '10px 0',
-                  }}
-                  {...params}
-                />
-              )}
-            />
-            <StyledButton
-              variant="contained"
-              color="primary"
-              onClick={handleFilter}
-              sx={{
-                width: '100%',
-                margin: '10px 0',
-              }}
-            >
-              Filter
-            </StyledButton>
-            <StyledButton
-              variant="contained"
-              color="primary"
-              onClick={handleCancelFilter}
-              sx={{
-                width: '100%',
-                margin: '10px 0',
-              }}
-            >
-              Cancel
-            </StyledButton>
-          </LocalizationProvider>
-        </Popover>
-        <List>
-          {homePageState.bookings.data.length > 0 &&
-            homePageState.bookings.data.map(booking => (
-              <ListItem
-                disabled={!isUpcoming(booking.start_date)}
-                key={booking.id}
-              >
-                <ListItemIcon>
-                  <NoCrashIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={`${booking.car} - ${booking.car_model} - ${booking.car_model_year} - ${booking.car_color}`}
-                  secondary={`${booking.start_date} - ${booking.end_date}`}
-                />
-                <Chip
-                  label={isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}
-                />
-              </ListItem>
-            ))}
-        </List>
+      <Grid item xs={12} md={4} lg={4}>
+        <Bookings
+          bookings={homePageState.bookings.data}
+          handleFilter={handleFilter}
+          handleCancelFilter={handleCancelFilter}
+        />
       </Grid>
       <Dialog
         open={open}

@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@mui/material/Button';
+import { StyledBtn } from './styles';
 
 interface Props {
   children: React.ReactNode;
@@ -34,7 +34,7 @@ const StyledButton = ({
   ...rest
 }: Props) => {
   return (
-    <Button
+    <StyledBtn
       onClick={onClick}
       variant={variant}
       color={color}
@@ -46,7 +46,7 @@ const StyledButton = ({
       {...rest}
     >
       {children}
-    </Button>
+    </StyledBtn>
   );
 };
 

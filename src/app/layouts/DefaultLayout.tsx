@@ -1,11 +1,20 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
 import HomeIcon from '@mui/icons-material/Home';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+import MenuIcon from '@mui/icons-material/Menu';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { StyledDrawer, StyledMenuText, StyledBoxIcon } from './styles';
+import { useDispatch } from 'react-redux';
+import { actions } from 'app/pages/HomePage/slice';
+
+import { StyledDrawer, StyledHeading, StyledBoxIcon } from './styles';
 
 interface Props {
   children: React.ReactNode;
@@ -14,21 +23,48 @@ interface Props {
   onCloseDrawer?: () => void;
 }
 
-const drawerWidth = 280;
+const drawerWidth = 50;
 
 const DefaultLayout = ({ children, drawerOpen }: Props) => {
+  const dispatch = useDispatch();
+  const [open, setOpen] = React.useState(false);
+  const [checked, setChecked] = React.useState(false);
+  const theme = useTheme();
+  const isLg = useMediaQuery(theme.breakpoints.up('lg'));
+
+  React.useEffect(() => {
+    if (isLg) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [isLg]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
+  React.useEffect(() => {
+    if (checked) {
+      dispatch(actions.showAvailableCars());
+    } else {
+      dispatch(actions.getCars());
+    }
+  }, [checked, dispatch]);
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <StyledDrawer
         variant="permanent"
-        open={true}
+        open={open}
         anchor="left"
         ModalProps={{
           keepMounted: true,
         }}
         sx={{
-          flexShrink: { sm: 0, width: drawerWidth },
-          backgroundColor: '#fffbf7',
+          flexShrink: { sm: 0, width: 50 },
+          backgroundColor: '#f5f5f5',
+          border: '1px solid #e0e0e0',
         }}
       >
         <Box>
@@ -42,7 +78,6 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
                 <StyledBoxIcon>
                   <TimeToLeaveIcon />
                 </StyledBoxIcon>
-                <p>RentACar</p>
               </Box>
             </Grid>
             <Grid
@@ -52,15 +87,12 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
                 display: 'flex',
               }}
             >
-              <List>
-                <Box
-                  sx={{ minWidth: '36px', display: 'flex' }}
-                  component="span"
-                >
-                  <HomeIcon />
-                  <StyledMenuText>Cars Home</StyledMenuText>
-                </Box>
-              </List>
+              <Box
+                sx={{ margin: '20px auto', display: 'flex' }}
+                component="span"
+              >
+                <HomeIcon />
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -72,14 +104,43 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
           overflow: 'auto',
         }}
       >
-        <div>
-          <Box>Home</Box>
-        </div>
+        <Box
+          sx={{
+            paddingLeft: { xs: 2, lg: '32px' },
+            width: { sm: `calc(100% - ${drawerWidth - 30}px)` },
+          }}
+        >
+          <StyledHeading>
+            {!isLg && (
+              <>
+                {open ? (
+                  <MenuOpenIcon onClick={() => setOpen(!open)} />
+                ) : (
+                  <MenuIcon onClick={() => setOpen(!open)} />
+                )}
+              </>
+            )}
+            Car rental home
+          </StyledHeading>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              }
+              label="Show only available cars"
+            />
+          </FormGroup>
+        </Box>
         <Grid
           container
           spacing={3}
           sx={{
-            paddingLeft: '24px',
+            paddingLeft: { xs: 2, lg: '24px' },
+            paddingRight: { xs: 4 },
             width: { sm: `calc(100% - ${drawerWidth - 30}px)` },
           }}
         >
