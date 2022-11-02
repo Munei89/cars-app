@@ -12,17 +12,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions, reducer, sliceKey } from './slice';
 import { homePageSaga } from './saga';
 import { selectHomePage } from './selectors';
+import StyledSnackbar from 'app/components/StyledSnackbar';
 import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
 
 import StyledButton from 'app/components/StyledButton';
 
-import CarListing from './components/CarListing';
+import CardListing from './components/CardListing';
 import Bookings from './components/Bookings';
 
 export function HomePage() {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const [errMessage, setErrMessage] = React.useState('');
   const [selectedCar, setSelectedCar] = React.useState({
     id: 0,
     car: '',
@@ -58,11 +61,16 @@ export function HomePage() {
 
   const handleBook = carId => {
     const carDetail = homePageState.cars.find(car => car.id === carId);
-
+    const { start_date, end_date } = values;
+    if (new Date(start_date) > new Date(end_date)) {
+      setError(true);
+      setErrMessage('From date cannot be greater than to date');
+      return;
+    }
     const booking = {
       ...carDetail,
-      start_date: moment(values.start_date).format('YYYY-MM-DD'),
-      end_date: moment(values.end_date).format('YYYY-MM-DD'),
+      start_date: moment(start_date).format('YYYY-MM-DD'),
+      end_date: moment(end_date).format('YYYY-MM-DD'),
       updated_at: moment().format('YYYY-MM-DD'),
       created_at: moment().format('YYYY-MM-DD'),
     };
@@ -95,7 +103,10 @@ export function HomePage() {
         {homePageState.loading ? (
           <CircularProgress />
         ) : (
-          <CarListing cars={homePageState.cars} handleBookCar={handleBookCar} />
+          <CardListing
+            cars={homePageState.cars}
+            handleBookCar={handleBookCar}
+          />
         )}
       </Grid>
       <Grid item xs={12} md={4} lg={4}>
@@ -222,6 +233,13 @@ export function HomePage() {
           </StyledButton>
         </Box>
       </Dialog>
+      <StyledSnackbar
+        open={error}
+        severity="error"
+        autoHideDuration={6000}
+        handleClose={() => setError(false)}
+        message={errMessage}
+      />
     </DefaultLayout>
   );
 }

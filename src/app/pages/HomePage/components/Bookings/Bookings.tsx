@@ -16,8 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
 import { IBooking } from '../../types';
 import { StyledHeadingWrapper, StyledBookings } from './styles';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import StyledSnackbar from 'app/components/StyledSnackbar';
 
 interface IProps {
   handleFilter: (filters: any) => void;
@@ -25,12 +24,6 @@ interface IProps {
   bookings: IBooking[];
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const [error, setError] = React.useState(false);
   const [errMessage, setErrMessage] = React.useState('');
@@ -40,8 +33,6 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
     toDate: moment().format('YYYY-MM-DD'),
   });
 
-  const today = new Date();
-
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,8 +40,6 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const isUpcoming = date => {
     const today = new Date();
     const bookingDate = new Date(date);
-    console.log('today', today);
-    console.log('bookingDate', bookingDate);
     return bookingDate > today;
   };
 
@@ -75,7 +64,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const id = popoverOpen ? 'simple-popover' : undefined;
 
   return (
-    <StyledBookings>
+    <StyledBookings data-testid="bookings">
       <StyledHeadingWrapper>
         <h1>Bookings</h1>
         <FilterListIcon onClick={handleClick} aria-describedby={id} />
@@ -101,7 +90,6 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             label="Filter start Date"
             inputFormat="MM/DD/YYYY"
             value={filters.fromDate}
-            maxDate={today.setDate(today.getDate() - 1)}
             onChange={e =>
               setFilters({
                 ...filters,
@@ -171,12 +159,21 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             <ListItem
               disabled={!isUpcoming(booking.start_date)}
               key={booking.id}
+              data-testid="booking-list"
             >
               <ListItemIcon>
                 {isUpcoming(booking.start_date) ? (
-                  <CarRentalIcon />
+                  <CarRentalIcon
+                    sx={{
+                      fill: `${booking.car_color}`,
+                    }}
+                  />
                 ) : (
-                  <NoCrashIcon />
+                  <NoCrashIcon
+                    sx={{
+                      fill: `${booking.car_color}`,
+                    }}
+                  />
                 )}
               </ListItemIcon>
               <ListItemText
@@ -192,11 +189,13 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
           <h3>No bookings found</h3>
         )}
       </List>
-      <Snackbar open={error} autoHideDuration={6000}>
-        <Alert severity="error" sx={{ width: '100%' }}>
-          {errMessage}
-        </Alert>
-      </Snackbar>
+      <StyledSnackbar
+        open={error}
+        autoHideDuration={6000}
+        message={errMessage}
+        severity="error"
+        handleClose={() => setError(false)}
+      />
     </StyledBookings>
   );
 };
