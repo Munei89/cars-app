@@ -40,6 +40,8 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
     toDate: moment().format('YYYY-MM-DD'),
   });
 
+  const today = new Date();
+
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,6 +49,8 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const isUpcoming = date => {
     const today = new Date();
     const bookingDate = new Date(date);
+    console.log('today', today);
+    console.log('bookingDate', bookingDate);
     return bookingDate > today;
   };
 
@@ -97,6 +101,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             label="Filter start Date"
             inputFormat="MM/DD/YYYY"
             value={filters.fromDate}
+            maxDate={today.setDate(today.getDate() - 1)}
             onChange={e =>
               setFilters({
                 ...filters,
