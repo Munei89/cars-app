@@ -18,7 +18,7 @@ export const GlobalStyle = createGlobalStyle`
 
   p,
   label {
-    font-family: 'Robotto', 'Times New Roman', serif;
+    font-family: 'Roboto', 'Times New Roman', serif;
     line-height: 1.5em;
   }
 

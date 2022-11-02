@@ -24,8 +24,9 @@ import NoCrashIcon from '@mui/icons-material/NoCrash';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { cars } from 'utils/constants';
 
-import StyledCard from 'app/components/StyledCard';
 import StyledButton from 'app/components/StyledButton';
+
+import CarListing from './components/CarListing';
 
 export function HomePage() {
   const dispatch = useDispatch();
@@ -81,6 +82,11 @@ export function HomePage() {
     return bookingDate > today;
   };
 
+  const handleBookCar = car => {
+    setSelectedCar(car);
+    setOpen(true);
+  };
+
   const handleBook = carId => {
     const carDetail = cars.find(car => car.id === carId);
 
@@ -123,34 +129,7 @@ export function HomePage() {
       </Helmet>
       {homePageState.loading && <div>Loading...</div>}
       <Grid item xs={8}>
-        <Grid container spacing={2}>
-          {cars.length > 0 &&
-            cars.map(car => (
-              <Grid item xs={4} key={car.id}>
-                <StyledCard>
-                  <i className={`car-${car.car.toLocaleLowerCase()}`}></i>
-                  <Chip label={car.availability ? 'Available' : 'Booked'} />
-
-                  <h1>{car.car}</h1>
-                  <p>
-                    {car.car_model} - {car.car_model_year} - {car.car_color}
-                  </p>
-
-                  <StyledButton
-                    variant="contained"
-                    color="primary"
-                    disabled={!car.availability}
-                    onClick={() => {
-                      setSelectedCar(car);
-                      setOpen(true);
-                    }}
-                  >
-                    Book
-                  </StyledButton>
-                </StyledCard>
-              </Grid>
-            ))}
-        </Grid>
+        <CarListing cars={cars} handleBookCar={handleBookCar} />
       </Grid>
       <Grid item xs={4}>
         <h1>
