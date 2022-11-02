@@ -91,7 +91,7 @@ export function HomePage() {
 
   return (
     <DefaultLayout>
-      <Grid item xs={12} md={8} lg={8}>
+      <Grid item xs={12} md={8} lg={8} role="grid">
         {homePageState.loading ? (
           <CircularProgress />
         ) : (
