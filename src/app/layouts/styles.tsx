@@ -9,20 +9,20 @@ export const StyledDrawer = styled(Drawer)<{ open: boolean; $islg?: boolean }>`
     -moz-transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     -o-transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
-    width: ${({ open }) => (open ? '280px' : '0')};
+    width: ${({ open }) => (open ? '100px' : '0')};
     visibility: ${({ open }) => (open ? 'visible' : 'hidden')};
     position: 'relative';
   }
 
   .MuiDrawer-paper {
-    padding: 48px 0 0 48px;
-    background: #fffbf7;
-    border: 0px;
+    padding: 20px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
     -webkit-transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     -moz-transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     -o-transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
     transition: width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
-    width: ${({ open }) => (open ? '280px' : '0')};
+    width: ${({ open }) => (open ? '100px' : '0')};
     visibility: ${({ open }) => (open ? 'visible' : 'hidden')};
     position: ${({ $islg }) => ($islg ? 'relative' : 'fixed')};
 
@@ -64,14 +64,24 @@ export const StyledAppBar = styled(AppBar)`
 `;
 
 export const StyledBoxIcon = styled(Box)`
-  background: red;
+  background: black;
   padding: 16px 0px;
   width: 60px;
   color: #fff;
   border-radius: 10%;
   text-align: center;
   margin-bottom: 10px;
-  margin-top: -24px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+export const StyledHeading = styled('h1')`
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 32px;
+  margin-top: 20px;
+  svg {
+    margin-right: 10px;
+  }
 `;

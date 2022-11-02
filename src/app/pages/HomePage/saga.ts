@@ -1,14 +1,10 @@
-import Endpoints from 'config/endpoints';
-import { call, put, takeLatest } from 'redux-saga/effects';
-import request from 'utils/request';
-import { carBookings } from 'utils/constants';
+import { put, takeLatest } from 'redux-saga/effects';
+import { carBookings, cars } from 'utils/constants';
 import { actions } from './slice';
 
 export function* getCars() {
-  const { getAll } = Endpoints.cars;
   try {
-    const cars = yield call(request.get, getAll);
-    yield put(actions.getCarsSuccess(cars.cars));
+    yield put(actions.getCarsSuccess(cars));
   } catch (err) {
     yield put(actions.getCarsError());
   }

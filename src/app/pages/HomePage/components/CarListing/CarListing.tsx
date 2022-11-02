@@ -15,7 +15,7 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
     <Grid container spacing={2}>
       {cars.length > 0 &&
         cars.map(car => (
-          <Grid item xs={4} key={car.id}>
+          <Grid item xs={12} md={4} lg={4} key={car.id}>
             <StyledCard>
               <StyledIcon className={`car-${car.car.toLocaleLowerCase()}`} />
               <StyledChip
