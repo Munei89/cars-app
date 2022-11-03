@@ -16,6 +16,8 @@ import { actions } from 'app/pages/HomePage/slice';
 import { useTheme } from '@mui/material/styles';
 
 import { StyledDrawer, StyledHeading, StyledBoxIcon } from './styles';
+import LanguageSwitcher from 'app/components/LanguageSwitcher';
+import i18next from 'i18next';
 
 interface Props {
   children: React.ReactNode;
@@ -134,7 +136,7 @@ const DefaultLayout = ({ children }: Props) => {
                     )}
                   </>
                 )}
-                Car rental home
+                {i18next.t('APP_TITLE') as string}
               </StyledHeading>
               <FormGroup>
                 <FormControlLabel
@@ -145,14 +147,14 @@ const DefaultLayout = ({ children }: Props) => {
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
                   }
-                  label="Show only available cars"
+                  label={i18next.t('SHOW_AVAILABLE_CARS') as string}
                 />
               </FormGroup>
             </Grid>
             <Grid item xs={12} lg={3}>
               <TextField
                 id="outlined-basic"
-                label="Search by brand"
+                label={i18next.t('SEARCH_BY_BRAND') as string}
                 variant="outlined"
                 value={search}
                 onChange={handleSearch}
@@ -161,6 +163,9 @@ const DefaultLayout = ({ children }: Props) => {
                   marginTop: { xs: '-10px', lg: '20px' },
                 }}
               />
+            </Grid>
+            <Grid item xs={12} lg={4}>
+              <LanguageSwitcher />
             </Grid>
           </Grid>
         </Box>

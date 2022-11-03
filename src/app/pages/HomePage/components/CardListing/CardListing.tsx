@@ -8,6 +8,7 @@ import { StyledIcon, StyledChip, StyledHeading, StyledText } from './styles';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import Pagination from '@mui/material/Pagination';
 import usePagination from 'utils/hooks/usePagination';
+import i18next from 'i18next';
 
 interface IProps {
   cars: ICar[];
@@ -42,7 +43,11 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
                 <StyledIcon className={`car-${car.car.toLocaleLowerCase()}`} />
                 <StyledChip
                   $isBooked={car.availability}
-                  label={car.availability ? 'Available' : 'Booked'}
+                  label={
+                    car.availability
+                      ? `${i18next.t('AVAILABLE') as string}`
+                      : `${i18next.t('BOOKED') as string}`
+                  }
                 />
 
                 <Box
@@ -53,9 +58,15 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
                 >
                   <div>
                     <StyledHeading>{car.car}</StyledHeading>
-                    <StyledText>Model: {car.car_model}</StyledText>
-                    <StyledText>Year: {car.car_model_year}</StyledText>
-                    <StyledText>Price: {car.price}</StyledText>
+                    <StyledText>
+                      {i18next.t('MODEL') as string}: {car.car_model}
+                    </StyledText>
+                    <StyledText>
+                      {i18next.t('YEAR') as string}: {car.car_model_year}
+                    </StyledText>
+                    <StyledText>
+                      {i18next.t('Price') as string}: {car.price}
+                    </StyledText>
                   </div>
                   <div>
                     <DirectionsCarIcon
@@ -77,14 +88,18 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
                     handleBookCar(car);
                   }}
                 >
-                  {car.availability ? 'Book' : 'Booked'}
+                  {car.availability
+                    ? `${i18next.t('BOOK')}`
+                    : `${i18next.t('BOOKED')}`}
                 </StyledButton>
               </StyledCard>
             </Grid>
           ))
         ) : (
           <Grid item xs={12} md={4} lg={4}>
-            <StyledHeading>No cars available</StyledHeading>
+            <StyledHeading>
+              {i18next.t('NO_CARS_AVAILABLE') as string}
+            </StyledHeading>
           </Grid>
         )}
       </Grid>

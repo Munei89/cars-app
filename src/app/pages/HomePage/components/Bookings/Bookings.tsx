@@ -17,6 +17,7 @@ import moment from 'moment';
 import { IBooking } from '../../types';
 import { StyledHeadingWrapper, StyledBookings } from './styles';
 import StyledSnackbar from 'app/components/StyledSnackbar';
+import i18next from 'i18next';
 
 interface IProps {
   handleFilter: (filters: any) => void;
@@ -51,7 +52,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
     const { fromDate, toDate } = filters;
     if (new Date(fromDate) > new Date(toDate)) {
       setError(true);
-      setErrMessage('From date cannot be greater than to date');
+      setErrMessage(i18next.t('DATE_RANGE_ERROR'));
       return;
     }
     setError(false);
@@ -66,7 +67,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   return (
     <StyledBookings data-testid="bookings">
       <StyledHeadingWrapper>
-        <h1>Bookings</h1>
+        <h1>{i18next.t('BOOKINGS') as string}</h1>
         <FilterListIcon onClick={handleClick} aria-describedby={id} />
       </StyledHeadingWrapper>
       <Popover
@@ -84,10 +85,10 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
           },
         }}
       >
-        <h3>Filter bookings by date </h3>
+        <h3>{i18next.t('FILTER_BY_DATE') as string}</h3>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DesktopDatePicker
-            label="Filter start Date"
+            label={i18next.t('START_DATE') as string}
             inputFormat="MM/DD/YYYY"
             value={filters.fromDate}
             onChange={e =>
@@ -107,7 +108,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             )}
           />
           <DesktopDatePicker
-            label="Filter end Date"
+            label={i18next.t('END_DATE') as string}
             inputFormat="MM/DD/YYYY"
             value={filters.toDate}
             onChange={e =>
@@ -135,7 +136,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
               margin: '10px 0',
             }}
           >
-            Filter
+            {i18next.t('FILTER') as string}
           </StyledButton>
           <StyledButton
             variant="contained"
@@ -149,7 +150,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
               margin: '10px 0',
             }}
           >
-            Cancel
+            {i18next.t('CANCEL') as string}
           </StyledButton>
         </LocalizationProvider>
       </Popover>
@@ -186,7 +187,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             </ListItem>
           ))
         ) : (
-          <h3>No bookings found</h3>
+          <h3>{i18next.t('NO_BOOKINGS') as string}</h3>
         )}
       </List>
       <StyledSnackbar

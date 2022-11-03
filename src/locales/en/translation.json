@@ -1,3 +1,25 @@
 {
-  "title": "welcome"
+  "APP_TITLE": "Car rental home",
+  "SHOW_AVAILABLE_CARS": "Show available cars",
+  "SEARCH_BY_BRAND": "Search by brand",
+  "BOOKINGS": "Bookings",
+  "MODEL": "Model",
+  "BRAND": "Brand",
+  "YEAR": "Year",
+  "PRICE": "Price",
+  "BOOK": "Book",
+  "BOOKED": "Booked",
+  "AVAILABLE": "Available",
+  "SELECTED_CAR_TO_BOOK": "Selected car to book",
+  "CAR": "Car",
+  "CAR_MODEL": "Car model",
+  "MODEL_YEAR": "Model year",
+  "START_DATE": "Start date",
+  "END_DATE": "End date",
+  "CANCEL": "Cancel",
+  "FILTER_BY_DATE": "Filter bookings by date",
+  "FILTER": "Filter",
+  "DATE_RANGE_ERROR": "From date cannot be greater than to date",
+  "NO_BOOKINGS": "No bookings found",
+  "NO_CARS_AVAILABLE": "No cars available"
 }
