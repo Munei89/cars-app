@@ -3,10 +3,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { setCurrentLanguage } from 'utils/translation';
+import { setCurrentLanguage, getCurrentLanguage } from 'utils/translation';
 
 const LanguageSwitcher = () => {
-  const [language, setLanguage] = React.useState('en-US');
+  const [language, setLanguage] = React.useState(
+    getCurrentLanguage() || 'en-US',
+  );
 
   const handleChange = event => {
     setLanguage(event.target.value as string);
@@ -25,10 +27,9 @@ const LanguageSwitcher = () => {
           id="demo-simple-select"
           value={language}
           onChange={handleChange}
-          label="Lang"
         >
-          <MenuItem value={'en-US'}>EN</MenuItem>
-          <MenuItem value={'de'}>DE</MenuItem>
+          <MenuItem value="en-US">English</MenuItem>
+          <MenuItem value="de">German</MenuItem>
         </Select>
       </FormControl>
     </Box>

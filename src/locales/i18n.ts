@@ -1,16 +1,16 @@
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { getLanguageKeys } from 'utils/translation';
 import { ConvertedToFunctionsType } from './types';
 import en from './en/translation.json';
+import de from './de/translation.json';
 
 const translationsJson = {
   'en-US': {
     translation: en,
   },
   de: {
-    translation: getLanguageKeys('de'),
+    translation: de,
   },
 };
 
