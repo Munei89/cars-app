@@ -3,6 +3,7 @@ import Chip from '@mui/material/Chip';
 
 export const StyledIcon = styles.i`
   margin-right: 5px;
+  font-size: 4.5rem;
 `;
 
 export const StyledChip = styles(Chip)<{ $isBooked?: boolean }>`

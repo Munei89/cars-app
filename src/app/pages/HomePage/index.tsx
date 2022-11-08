@@ -12,17 +12,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions, reducer, sliceKey } from './slice';
 import { homePageSaga } from './saga';
 import { selectHomePage } from './selectors';
+import StyledSnackbar from 'app/components/StyledSnackbar';
 import CircularProgress from '@mui/material/CircularProgress';
 import moment from 'moment';
+import i18next from 'i18next';
 
 import StyledButton from 'app/components/StyledButton';
 
-import CarListing from './components/CarListing';
+import CardListing from './components/CardListing';
 import Bookings from './components/Bookings';
 
 export function HomePage() {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const [errMessage, setErrMessage] = React.useState('');
   const [selectedCar, setSelectedCar] = React.useState({
     id: 0,
     car: '',
@@ -39,8 +43,6 @@ export function HomePage() {
     end_date: moment().format('YYYY-MM-DD'),
   });
 
-  const handleClose = () => setOpen(false);
-
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homePageSaga });
 
@@ -51,6 +53,8 @@ export function HomePage() {
     dispatch(actions.getBookings());
   }, [dispatch]);
 
+  const handleClose = () => setOpen(false);
+
   const handleBookCar = car => {
     setSelectedCar(car);
     setOpen(true);
@@ -58,11 +62,16 @@ export function HomePage() {
 
   const handleBook = carId => {
     const carDetail = homePageState.cars.find(car => car.id === carId);
-
+    const { start_date, end_date } = values;
+    if (new Date(start_date) > new Date(end_date)) {
+      setError(true);
+      setErrMessage('From date cannot be greater than to date');
+      return;
+    }
     const booking = {
       ...carDetail,
-      start_date: moment(values.start_date).format('YYYY-MM-DD'),
-      end_date: moment(values.end_date).format('YYYY-MM-DD'),
+      start_date: moment(start_date).format('YYYY-MM-DD'),
+      end_date: moment(end_date).format('YYYY-MM-DD'),
       updated_at: moment().format('YYYY-MM-DD'),
       created_at: moment().format('YYYY-MM-DD'),
     };
@@ -95,7 +104,10 @@ export function HomePage() {
         {homePageState.loading ? (
           <CircularProgress />
         ) : (
-          <CarListing cars={homePageState.cars} handleBookCar={handleBookCar} />
+          <CardListing
+            cars={homePageState.cars}
+            handleBookCar={handleBookCar}
+          />
         )}
       </Grid>
       <Grid item xs={12} md={4} lg={4}>
@@ -119,10 +131,13 @@ export function HomePage() {
             p: 2,
           }}
         >
-          <h3>Selected car for booking: {selectedCar.car}</h3>
+          <h3>
+            {i18next.t('SELECTED_CAR_TO_BOOK') as string}
+            {selectedCar.car}
+          </h3>
           <TextField
             id="outlined-basic"
-            label="Car"
+            label={i18next.t('CAR') as string}
             variant="outlined"
             sx={{
               width: '100%',
@@ -133,7 +148,7 @@ export function HomePage() {
           />
           <TextField
             id="outlined-basic"
-            label="Car Model"
+            label={i18next.t('CAR_MODEL') as string}
             variant="outlined"
             sx={{
               width: '100%',
@@ -144,7 +159,7 @@ export function HomePage() {
           />
           <TextField
             id="outlined-basic"
-            label="Model Year"
+            label={i18next.t('MODEL_YEAR') as string}
             variant="outlined"
             sx={{
               width: '100%',
@@ -155,7 +170,7 @@ export function HomePage() {
           />
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
-              label="Date"
+              label={i18next.t('START_DATE') as string}
               inputFormat="MM/DD/YYYY"
               value={values.start_date}
               onChange={e =>
@@ -176,7 +191,7 @@ export function HomePage() {
               )}
             />
             <DesktopDatePicker
-              label="End Date"
+              label={i18next.t('END_DATE') as string}
               inputFormat="MM/DD/YYYY"
               value={values.end_date}
               onChange={e =>
@@ -202,7 +217,7 @@ export function HomePage() {
             color="primary"
             onClick={() => handleBook(selectedCar.id)}
           >
-            Book
+            {i18next.t('BOOK') as string}
           </StyledButton>
           <StyledButton
             variant="contained"
@@ -218,10 +233,17 @@ export function HomePage() {
               });
             }}
           >
-            Cancel
+            {i18next.t('CANCEL') as string}
           </StyledButton>
         </Box>
       </Dialog>
+      <StyledSnackbar
+        open={error}
+        severity="error"
+        autoHideDuration={6000}
+        handleClose={() => setError(false)}
+        message={errMessage}
+      />
     </DefaultLayout>
   );
 }

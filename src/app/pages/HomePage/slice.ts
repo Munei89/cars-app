@@ -54,6 +54,12 @@ const homePageSlice = createSlice({
       const availableCars = state.cars.filter(car => car.availability);
       state.cars = availableCars;
     },
+    searchCars(state, action: PayloadAction<string>) {
+      const searchedCars = state.cars.filter(car =>
+        car.car.toLowerCase().includes(action.payload.toLowerCase()),
+      );
+      state.cars = searchedCars;
+    },
   },
 });
 

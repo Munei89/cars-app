@@ -16,8 +16,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
 import { IBooking } from '../../types';
 import { StyledHeadingWrapper, StyledBookings } from './styles';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import StyledSnackbar from 'app/components/StyledSnackbar';
+import i18next from 'i18next';
 
 interface IProps {
   handleFilter: (filters: any) => void;
@@ -25,12 +25,6 @@ interface IProps {
   bookings: IBooking[];
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const [error, setError] = React.useState(false);
   const [errMessage, setErrMessage] = React.useState('');
@@ -40,8 +34,6 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
     toDate: moment().format('YYYY-MM-DD'),
   });
 
-  const today = new Date();
-
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,8 +41,6 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const isUpcoming = date => {
     const today = new Date();
     const bookingDate = new Date(date);
-    console.log('today', today);
-    console.log('bookingDate', bookingDate);
     return bookingDate > today;
   };
 
@@ -62,7 +52,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
     const { fromDate, toDate } = filters;
     if (new Date(fromDate) > new Date(toDate)) {
       setError(true);
-      setErrMessage('From date cannot be greater than to date');
+      setErrMessage(i18next.t('DATE_RANGE_ERROR'));
       return;
     }
     setError(false);
@@ -75,9 +65,9 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
   const id = popoverOpen ? 'simple-popover' : undefined;
 
   return (
-    <StyledBookings>
+    <StyledBookings data-testid="bookings">
       <StyledHeadingWrapper>
-        <h1>Bookings</h1>
+        <h1>{i18next.t('BOOKINGS') as string}</h1>
         <FilterListIcon onClick={handleClick} aria-describedby={id} />
       </StyledHeadingWrapper>
       <Popover
@@ -95,13 +85,12 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
           },
         }}
       >
-        <h3>Filter bookings by date </h3>
+        <h3>{i18next.t('FILTER_BY_DATE') as string}</h3>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DesktopDatePicker
-            label="Filter start Date"
+            label={i18next.t('START_DATE') as string}
             inputFormat="MM/DD/YYYY"
             value={filters.fromDate}
-            maxDate={today.setDate(today.getDate() - 1)}
             onChange={e =>
               setFilters({
                 ...filters,
@@ -119,7 +108,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             )}
           />
           <DesktopDatePicker
-            label="Filter end Date"
+            label={i18next.t('END_DATE') as string}
             inputFormat="MM/DD/YYYY"
             value={filters.toDate}
             onChange={e =>
@@ -147,7 +136,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
               margin: '10px 0',
             }}
           >
-            Filter
+            {i18next.t('FILTER') as string}
           </StyledButton>
           <StyledButton
             variant="contained"
@@ -161,7 +150,7 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
               margin: '10px 0',
             }}
           >
-            Cancel
+            {i18next.t('CANCEL') as string}
           </StyledButton>
         </LocalizationProvider>
       </Popover>
@@ -171,12 +160,21 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
             <ListItem
               disabled={!isUpcoming(booking.start_date)}
               key={booking.id}
+              data-testid="booking-list"
             >
               <ListItemIcon>
                 {isUpcoming(booking.start_date) ? (
-                  <CarRentalIcon />
+                  <CarRentalIcon
+                    sx={{
+                      fill: `${booking.car_color}`,
+                    }}
+                  />
                 ) : (
-                  <NoCrashIcon />
+                  <NoCrashIcon
+                    sx={{
+                      fill: `${booking.car_color}`,
+                    }}
+                  />
                 )}
               </ListItemIcon>
               <ListItemText
@@ -184,19 +182,25 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
                 secondary={`${booking.start_date} - ${booking.end_date}`}
               />
               <Chip
-                label={isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}
+                label={
+                  isUpcoming(booking.start_date)
+                    ? `${i18next.t('UPCOMING') as string}`
+                    : `${i18next.t('PAST') as string}`
+                }
               />
             </ListItem>
           ))
         ) : (
-          <h3>No bookings found</h3>
+          <h3>{i18next.t('NO_BOOKINGS') as string}</h3>
         )}
       </List>
-      <Snackbar open={error} autoHideDuration={6000}>
-        <Alert severity="error" sx={{ width: '100%' }}>
-          {errMessage}
-        </Alert>
-      </Snackbar>
+      <StyledSnackbar
+        open={error}
+        autoHideDuration={6000}
+        message={errMessage}
+        severity="error"
+        handleClose={() => setError(false)}
+      />
     </StyledBookings>
   );
 };

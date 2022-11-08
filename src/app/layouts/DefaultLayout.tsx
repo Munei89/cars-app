@@ -4,17 +4,20 @@ import Grid from '@mui/material/Grid';
 import HomeIcon from '@mui/icons-material/Home';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
 import MenuIcon from '@mui/icons-material/Menu';
+import TextField from '@mui/material/TextField';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useDispatch } from 'react-redux';
 import { actions } from 'app/pages/HomePage/slice';
+import { useTheme } from '@mui/material/styles';
 
 import { StyledDrawer, StyledHeading, StyledBoxIcon } from './styles';
+import LanguageSwitcher from 'app/components/LanguageSwitcher';
+import i18next from 'i18next';
 
 interface Props {
   children: React.ReactNode;
@@ -25,9 +28,10 @@ interface Props {
 
 const drawerWidth = 50;
 
-const DefaultLayout = ({ children, drawerOpen }: Props) => {
+const DefaultLayout = ({ children }: Props) => {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState('');
   const [checked, setChecked] = React.useState(false);
   const theme = useTheme();
   const isLg = useMediaQuery(theme.breakpoints.up('lg'));
@@ -51,6 +55,16 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
       dispatch(actions.getCars());
     }
   }, [checked, dispatch]);
+
+  const handleSearch = e => {
+    setSearch(e.target.value);
+    if (e.target.value.length > 3) {
+      dispatch(actions.searchCars(e.target.value));
+    }
+    if (e.target.value.length === 0) {
+      dispatch(actions.getCars());
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -106,34 +120,62 @@ const DefaultLayout = ({ children, drawerOpen }: Props) => {
       >
         <Box
           sx={{
-            paddingLeft: { xs: 2, lg: '32px' },
+            paddingLeft: { xs: 3, lg: '32px' },
             width: { sm: `calc(100% - ${drawerWidth - 30}px)` },
           }}
         >
-          <StyledHeading>
-            {!isLg && (
-              <>
-                {open ? (
-                  <MenuOpenIcon onClick={() => setOpen(!open)} />
-                ) : (
-                  <MenuIcon onClick={() => setOpen(!open)} />
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={5}>
+              <StyledHeading>
+                {!isLg && (
+                  <>
+                    {open ? (
+                      <MenuOpenIcon onClick={() => setOpen(!open)} />
+                    ) : (
+                      <MenuIcon onClick={() => setOpen(!open)} />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-            Car rental home
-          </StyledHeading>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checked}
-                  onChange={handleChange}
-                  inputProps={{ 'aria-label': 'controlled' }}
+                {i18next.t('APP_TITLE') as string}
+              </StyledHeading>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleChange}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  }
+                  label={i18next.t('SHOW_AVAILABLE_CARS') as string}
                 />
-              }
-              label="Show only available cars"
-            />
-          </FormGroup>
+              </FormGroup>
+            </Grid>
+            <Grid item xs={9} lg={3}>
+              <TextField
+                id="outlined-basic"
+                label={i18next.t('SEARCH_BY_BRAND') as string}
+                variant="outlined"
+                value={search}
+                onChange={handleSearch}
+                sx={{
+                  width: '90%',
+                  marginTop: { xs: '-10px', lg: '20px' },
+                }}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              lg={4}
+              sx={{
+                textAlign: 'right',
+                paddingRight: '50px',
+              }}
+            >
+              <LanguageSwitcher />
+            </Grid>
+          </Grid>
         </Box>
         <Grid
           container
