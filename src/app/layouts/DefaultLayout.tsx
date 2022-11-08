@@ -120,7 +120,7 @@ const DefaultLayout = ({ children }: Props) => {
       >
         <Box
           sx={{
-            paddingLeft: { xs: 2, lg: '32px' },
+            paddingLeft: { xs: 3, lg: '32px' },
             width: { sm: `calc(100% - ${drawerWidth - 30}px)` },
           }}
         >
@@ -151,7 +151,7 @@ const DefaultLayout = ({ children }: Props) => {
                 />
               </FormGroup>
             </Grid>
-            <Grid item xs={12} lg={3}>
+            <Grid item xs={9} lg={3}>
               <TextField
                 id="outlined-basic"
                 label={i18next.t('SEARCH_BY_BRAND') as string}
@@ -164,7 +164,15 @@ const DefaultLayout = ({ children }: Props) => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} lg={4}>
+            <Grid
+              item
+              xs={3}
+              lg={4}
+              sx={{
+                textAlign: 'right',
+                paddingRight: '50px',
+              }}
+            >
               <LanguageSwitcher />
             </Grid>
           </Grid>

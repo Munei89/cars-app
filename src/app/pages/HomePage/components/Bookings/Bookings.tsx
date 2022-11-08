@@ -182,7 +182,11 @@ const Bookings = ({ handleFilter, bookings, handleCancelFilter }: IProps) => {
                 secondary={`${booking.start_date} - ${booking.end_date}`}
               />
               <Chip
-                label={isUpcoming(booking.start_date) ? 'Upcoming' : 'Past'}
+                label={
+                  isUpcoming(booking.start_date)
+                    ? `${i18next.t('UPCOMING') as string}`
+                    : `${i18next.t('PAST') as string}`
+                }
               />
             </ListItem>
           ))

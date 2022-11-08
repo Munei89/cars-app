@@ -6,7 +6,6 @@
   "MODEL": "Modell",
   "BRAND": "Marke",
   "YEAR": "Jahr",
-  "PRICE": "Preis",
   "BOOK": "Buch",
   "BOOKED": "Gebucht",
   "AVAILABLE": "Verfügbar",
@@ -21,5 +20,9 @@
   "FILTER": "Filter",
   "DATE_RANGE_ERROR": "Das Enddatum muss nach dem Startdatum liegen",
   "NO_BOOKINGS": "Keine Buchungen",
-  "NO_CARS_AVAILABLE": "Keine Autos verfügbar"
+  "NO_CARS_AVAILABLE": "Keine Autos verfügbar",
+  "PAST": "Vergangenheit",
+  "UPCOMING": "Bevorstehend",
+  "TODAY": "Heute",
+  "PRICE": "Preis"
 }

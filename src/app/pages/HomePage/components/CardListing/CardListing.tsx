@@ -65,7 +65,7 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
                       {i18next.t('YEAR') as string}: {car.car_model_year}
                     </StyledText>
                     <StyledText>
-                      {i18next.t('Price') as string}: {car.price}
+                      {i18next.t('PRICE') as string}: {car.price}
                     </StyledText>
                   </div>
                   <div>

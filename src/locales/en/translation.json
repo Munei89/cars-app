@@ -21,5 +21,8 @@
   "FILTER": "Filter",
   "DATE_RANGE_ERROR": "From date cannot be greater than to date",
   "NO_BOOKINGS": "No bookings found",
-  "NO_CARS_AVAILABLE": "No cars available"
+  "NO_CARS_AVAILABLE": "No cars available",
+  "PAST": "Past",
+  "UPCOMING": "Upcoming",
+  "TODAY": "Today"
 }

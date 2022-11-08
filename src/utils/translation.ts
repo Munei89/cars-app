@@ -21,7 +21,7 @@ export const setCurrentLanguage = (lang: string) => {
   });
 };
 
-export const isLangArabic = () => {
+export const isLangDe = () => {
   return getCurrentLanguage() === 'de';
 };
 
