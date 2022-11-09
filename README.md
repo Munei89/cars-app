@@ -2,7 +2,7 @@
 
 ⚠️ Using [Yarn Package Manager](https://yarnpkg.com) is recommended over `npm`.
 
-To intall the dependencies, run:
+To install the dependencies, run:
 
 ```shell
 yarn
