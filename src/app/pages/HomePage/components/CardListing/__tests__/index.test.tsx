@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, getByText } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { cars } from 'utils/constants';
 import CardListing from '../CardListing';
 import { ICar } from 'app/pages/HomePage/types';
