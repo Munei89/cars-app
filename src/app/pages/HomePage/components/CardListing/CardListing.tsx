@@ -34,6 +34,7 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
             <Grid
               item
               xs={12}
+              sm={12}
               md={4}
               lg={4}
               key={car.id}
@@ -96,7 +97,7 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
             </Grid>
           ))
         ) : (
-          <Grid item xs={12} md={4} lg={4}>
+          <Grid item xs={12} sm={12} md={4} lg={4}>
             <StyledHeading>
               {i18next.t('NO_CARS_AVAILABLE') as string}
             </StyledHeading>
@@ -109,7 +110,7 @@ const CarListing = ({ cars, handleBookCar }: IProps) => {
           marginTop: '40px',
         }}
       >
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12} sm={12} md={4} lg={4}>
           <Pagination
             count={count}
             onChange={handleChange}

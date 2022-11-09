@@ -65,7 +65,7 @@ export function HomePage() {
     const { start_date, end_date } = values;
     if (new Date(start_date) > new Date(end_date)) {
       setError(true);
-      setErrMessage('From date cannot be greater than to date');
+      setErrMessage(i18next.t('DATE_RANGE_ERROR'));
       return;
     }
     const booking = {
@@ -100,7 +100,7 @@ export function HomePage() {
 
   return (
     <DefaultLayout>
-      <Grid item xs={12} md={8} lg={8} role="grid">
+      <Grid item xs={12} sm={12} md={12} lg={8} role="grid">
         {homePageState.loading ? (
           <CircularProgress />
         ) : (
@@ -110,7 +110,7 @@ export function HomePage() {
           />
         )}
       </Grid>
-      <Grid item xs={12} md={4} lg={4}>
+      <Grid item xs={12} sm={12} md={12} lg={4}>
         <Bookings
           bookings={homePageState.bookings.data}
           handleFilter={handleFilter}

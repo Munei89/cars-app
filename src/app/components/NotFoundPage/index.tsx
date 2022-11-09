@@ -2,8 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { P } from './P';
 import { Helmet } from 'react-helmet-async';
+import StyledButton from '../StyledButton';
+import { useNavigate } from 'react-router-dom';
 
 export function NotFoundPage() {
+  const navigate = useNavigate();
   return (
     <>
       <Helmet>
@@ -19,6 +22,9 @@ export function NotFoundPage() {
           4
         </Title>
         <P>Page not found.</P>
+        <StyledButton onClick={() => navigate('/')}>
+          Go to homepage
+        </StyledButton>
       </Wrapper>
     </>
   );
